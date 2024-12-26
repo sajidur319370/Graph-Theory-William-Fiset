@@ -1,5 +1,6 @@
 package bipartiteGraph;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BipartiteGraphCheckAdjacencyList {
@@ -39,6 +40,7 @@ public class BipartiteGraphCheckAdjacencyList {
 
 		colors = new int[n];
 		int nodesVisited = colorGraph(0, RED);
+		System.out.println("node visited: " + nodesVisited);
 
 		// The graph is not bipartite. Either not all the nodes were visited or the
 		// colorGraph method returned -1 meaning the graph is not 2-colorable.
@@ -63,6 +65,7 @@ public class BipartiteGraphCheckAdjacencyList {
 		for (int to : edges) {
 			// Contradiction found. In a bipartite graph no two
 			// nodes of the same color can be next to each other!
+			System.out.println("Toooo " + to);
 			if (colors[to] == color)
 				return -1;
 			if (colors[to] == nextColor)
@@ -71,22 +74,60 @@ public class BipartiteGraphCheckAdjacencyList {
 			// If a contradiction is found propagate return -1
 			// otherwise keep track of the number of visited nodes.
 			int count = colorGraph(to, nextColor);
+			System.out.println("count: " + count);
 			if (count == -1)
 				return -1;
 			visitCount += count;
+			System.out.println("vc:   " + visitCount);
 		}
 
 		return visitCount;
 	}
 
+	/**
+	 * Creates an empty graph represented as an adjacency list of size n
+	 *
+	 * @param n The maximum number of nodes in the graph.
+	 */
+	public static List<List<Integer>> createEmptyAdjacencyList(int n) {
+		if (n < 0)
+			throw new IllegalArgumentException("n cannot be negative; received: " + n);
+		List<List<Integer>> graph = new ArrayList<>(n);
+		for (int i = 0; i < n; i++)
+			graph.add(new ArrayList<>());
+		return graph;
+	}
+
+	/**
+	 * Adds an unweighted directed edge from the node at index 'from' to the node at
+	 * index 'to'.
+	 */
+	public static void addDirectedEdge(List<List<Integer>> graph, int from, int to) {
+		if (graph == null)
+			throw new IllegalArgumentException("graph cannot be null");
+		int n = graph.size();
+		if (from < 0 || from >= n)
+			throw new IllegalArgumentException("'from' node index out of bounds; received: " + from);
+		if (to < 0 || to >= n)
+			throw new IllegalArgumentException("'to' node index out of bounds; received: " + to);
+		graph.get(from).add(to);
+	}
+
+	/**
+	 * Adds an unweighted undirected edge from the node at index 'from' to the node
+	 * at index 'to'.
+	 */
+	public static void addUndirectedEdge(List<List<Integer>> graph, int from, int to) {
+		addDirectedEdge(graph, from, to);
+		addDirectedEdge(graph, to, from);
+	}
+
 	/* Example usage */
-
-	public static void main(String[] args) {
-
+	public static void graphSingleton() {
 		// Singleton (not bipartite)
 		int n = 1;
-		List<List<Integer>> graph = Utils.createEmptyAdjacencyList(n);
-		Utils.addUndirectedEdge(graph, 0, 0);
+		List<List<Integer>> graph = createEmptyAdjacencyList(n);
+		addUndirectedEdge(graph, 0, 0);
 		displayGraph(graph);
 
 		// Prints:
@@ -95,10 +136,14 @@ public class BipartiteGraphCheckAdjacencyList {
 		// 0 -> 0
 		// This graph is bipartite: false
 
-		// Two nodes one edge between them (bipartite)
-		n = 2;
-		graph = Utils.createEmptyAdjacencyList(n);
-		Utils.addUndirectedEdge(graph, 0, 1);
+	}
+
+	public static void graph2() {
+		// Singleton (not bipartite)
+		int n = 2;
+		List<List<Integer>> graph = createEmptyAdjacencyList(n);
+		graph = createEmptyAdjacencyList(n);
+		addUndirectedEdge(graph, 0, 1);
 		displayGraph(graph);
 
 		// Prints:
@@ -107,12 +152,17 @@ public class BipartiteGraphCheckAdjacencyList {
 		// 1 -> 0
 		// This graph is bipartite: true
 
+	}
+
+	public static void graph3() {
+
 		// Triangle graph (not bipartite)
-		n = 3;
-		graph = Utils.createEmptyAdjacencyList(n);
-		Utils.addUndirectedEdge(graph, 0, 1);
-		Utils.addUndirectedEdge(graph, 1, 2);
-		Utils.addUndirectedEdge(graph, 2, 0);
+		int n = 3;
+		List<List<Integer>> graph = createEmptyAdjacencyList(n);
+		graph = createEmptyAdjacencyList(n);
+		addUndirectedEdge(graph, 0, 1);
+		addUndirectedEdge(graph, 1, 2);
+		addUndirectedEdge(graph, 2, 0);
 		displayGraph(graph);
 
 		// Prints:
@@ -124,12 +174,15 @@ public class BipartiteGraphCheckAdjacencyList {
 		// 2 -> 1
 		// 2 -> 0
 		// This graph is bipartite: false
+	}
 
+	public static void graph4() {
 		// Disjoint graph is bipartite connected components (altogether not bipartite)
-		n = 4;
-		graph = Utils.createEmptyAdjacencyList(n);
-		Utils.addUndirectedEdge(graph, 0, 1);
-		Utils.addUndirectedEdge(graph, 2, 3);
+		int n = 4;
+		List<List<Integer>> graph = createEmptyAdjacencyList(n);
+		graph = createEmptyAdjacencyList(n);
+		addUndirectedEdge(graph, 0, 1);
+		addUndirectedEdge(graph, 2, 3);
 		displayGraph(graph);
 
 		// Prints:
@@ -139,14 +192,17 @@ public class BipartiteGraphCheckAdjacencyList {
 		// 2 -> 3
 		// 3 -> 2
 		// This graph is bipartite: false
+	}
 
+	public static void graph5() {
 		// Square graph (bipartite)
-		n = 4;
-		graph = Utils.createEmptyAdjacencyList(n);
-		Utils.addUndirectedEdge(graph, 0, 1);
-		Utils.addUndirectedEdge(graph, 1, 2);
-		Utils.addUndirectedEdge(graph, 2, 3);
-		Utils.addUndirectedEdge(graph, 3, 0);
+		int n = 4;
+		List<List<Integer>> graph = createEmptyAdjacencyList(n);
+		graph = createEmptyAdjacencyList(n);
+		addUndirectedEdge(graph, 0, 1);
+		addUndirectedEdge(graph, 1, 2);
+		addUndirectedEdge(graph, 2, 3);
+		addUndirectedEdge(graph, 3, 0);
 		displayGraph(graph);
 
 		// Prints:
@@ -160,15 +216,18 @@ public class BipartiteGraphCheckAdjacencyList {
 		// 3 -> 2
 		// 3 -> 0
 		// This graph is bipartite: true
+	}
 
+	public static void graph6() {
 		// Square graph with additional edge (not bipartite)
-		n = 4;
-		graph = Utils.createEmptyAdjacencyList(n);
-		Utils.addUndirectedEdge(graph, 0, 1);
-		Utils.addUndirectedEdge(graph, 1, 2);
-		Utils.addUndirectedEdge(graph, 2, 3);
-		Utils.addUndirectedEdge(graph, 3, 0);
-		Utils.addUndirectedEdge(graph, 0, 2);
+		int n = 4;
+		List<List<Integer>> graph = createEmptyAdjacencyList(n);
+		graph = createEmptyAdjacencyList(n);
+		addUndirectedEdge(graph, 0, 1);
+		addUndirectedEdge(graph, 1, 2);
+		addUndirectedEdge(graph, 2, 3);
+		addUndirectedEdge(graph, 3, 0);
+		addUndirectedEdge(graph, 0, 2);
 		displayGraph(graph);
 
 		// Prints:
@@ -184,6 +243,15 @@ public class BipartiteGraphCheckAdjacencyList {
 		// 3 -> 2
 		// 3 -> 0
 		// This graph is bipartite: false
+	}
+
+	public static void main(String[] args) {
+		graphSingleton();
+		graph2();
+		graph3();
+		graph4();
+		graph5();
+		graph6();
 
 	}
 

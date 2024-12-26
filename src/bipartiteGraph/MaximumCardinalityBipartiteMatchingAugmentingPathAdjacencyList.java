@@ -95,6 +95,7 @@ public class MaximumCardinalityBipartiteMatchingAugmentingPathAdjacencyList {
 
 		// Left set includes {0,1,2,3} and right set {4,5,6,7}
 		addEdge(graph, 0, 4);
+		addEdge(graph, 0, 7);
 		addEdge(graph, 1, 5);
 		addEdge(graph, 2, 7);
 		addEdge(graph, 3, 6);
@@ -103,7 +104,7 @@ public class MaximumCardinalityBipartiteMatchingAugmentingPathAdjacencyList {
 		addEdge(graph, 6, 1);
 
 		// Prints '4' because that's the maximum matching.
-		System.out.printf("Maximum matching: %d", mcbm(graph, 4, 4));
+		System.out.printf("Maximum matching: %d", mcbm(graph, 8, 0));
 
 	}
 }
